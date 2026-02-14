@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>T20 Match Winner Predictor</title>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #0f172a;
+      color: #fff;
+    }
+
+    .container {
+      max-width: 520px;
+      margin: 40px auto;
+      padding: 20px;
+      background: #1e293b;
+      border-radius: 10px;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      margin-top: 10px;
+      font-size: 14px;
+    }
+
+    input, select, button {
+      width: 100%;
+      padding: 8px;
+      margin-top: 4px;
+      border-radius: 5px;
+      border: none;
+      font-size: 14px;
+    }
+
+    button {
+      margin-top: 20px;
+      background: #22c55e;
+      color: black;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    button:hover {
+      opacity: 0.9;
+    }
+
+    #result {
+      margin-top: 20px;
+      font-size: 18px;
+      text-align: center;
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="container">
+  <h1>🏏 T20 Match Winner Predictor</h1>
+
+  <form id="predictForm">
+
+    <!-- DROPDOWNS -->
+    <label>Venue</label>
+    <select name="Venue" required>
+      <option value="">Select Venue</option>
+      <option>Delhi</option>
+      <option>Mumbai</option>
+      <option>Chennai</option>
+    </select>
+
+    <label>Team A</label>
+    <select name="Team_A" required>
+      <option>India</option>
+      <option>Australia</option>
+      <option>New Zealand</option>
+      <option>England</option>
+    </select>
+
+    <label>Team B</label>
+    <select name="Team_B" required>
+      <option>Australia</option>
+      <option>India</option>
+      <option>New Zealand</option>
+      <option>England</option>
+    </select>
+
+    <label>Stage</label>
+    <select name="Stage">
+      <option>Group</option>
+      <option>Semi Final</option>
+      <option>Final</option>
+    </select>
+
+    <label>Pitch Type</label>
+    <select name="Pitch_Type">
+      <option>Spin-Friendly</option>
+      <option>Bowling</option>
+      <option>Balanced</option>
+    </select>
+
+    <label>Toss Winner</label>
+    <select name="Toss_Winner">
+      <option>Team_A</option>
+      <option>Team_B</option>
+    </select>
+
+    <label>Toss Decision</label>
+    <select name="Toss_Decision">
+      <option>Bat</option>
+      <option>Field</option>
+    </select>
+
+    <!-- NUMERIC INPUTS -->
+    <label>Team A Ranking</label>
+    <input type="number" name="Team_A_Ranking" required>
+
+    <label>Team B Ranking</label>
+    <input type="number" name="Team_B_Ranking" required>
+
+    <label>Team A Form</label>
+    <input type="number" step="0.01" name="Team_A_Form">
+
+    <label>Team B Form</label>
+    <input type="number" step="0.01" name="Team_B_Form">
+
+    <label>Head-to-Head A Wins</label>
+    <input type="number" name="HeadToHead_A_Wins">
+
+    <label>Head-to-Head B Wins</label>
+    <input type="number" name="HeadToHead_B_Wins">
+
+    <label>Avg T20 Score (Venue)</label>
+    <input type="number" name="Avg_T20_Score_Venue">
+
+    <label>Team A Tech Index</label>
+    <input type="number" step="0.01" name="Team_A_Tech_Index">
+
+    <label>Team B Tech Index</label>
+    <input type="number" step="0.01" name="Team_B_Tech_Index">
+
+    <label>Match Total</label>
+    <input type="number" name="Match_Total">
+
+    <button type="submit">Predict Winner</button>
+  </form>
+
+  <div id="result"></div>
+</div>
+
+<script>
+  document.getElementById("predictForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const formData = new FormData(e.target);
+    const data = {};
+
+    formData.forEach((value, key) => {
+      data[key] = isNaN(value) ? value : Number(value);
+    });
+
+    try {
+      const response = await fetch("http://127.0.0.1:8000/predict", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data)
+      });
+
+      const result = await response.json();
+
+      document.getElementById("result").innerHTML =
+        `🏆 Predicted Winner: <b>${result.predicted_winner}</b>`;
+
+    } catch (err) {
+      document.getElementById("result").innerHTML =
+        "❌ Error connecting to server";
+    }
+  });
+</script>
+
+</body>
+</html>
