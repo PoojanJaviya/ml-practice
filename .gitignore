@@ -1,3 +1,4 @@
 env_3.12/
 CNN/intel_image_classification/venv
 CNN/intel_image_classification/dataset/
+*.keras
